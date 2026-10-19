@@ -8,7 +8,6 @@ from tools.validate_monitoring_csv import validate_csv
 
 class ValidateCsvTests(unittest.TestCase):
     def check_csv(self, content: str) -> list[str]:
-        """Write CSV content to a temporary file and return validation errors."""
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "monitoring.csv"
             path.write_text(content, encoding="utf-8")
@@ -27,7 +26,7 @@ class ValidateCsvTests(unittest.TestCase):
             "2026-10-19T12:00:00Z,IN-1\n"
         )
         self.assertTrue(
-            any("Missing required columns" in error for error in errors),
+            any("Missing required columns" in e for e in errors),
             errors,
         )
 
@@ -37,7 +36,7 @@ class ValidateCsvTests(unittest.TestCase):
             "not-a-date,IN-1,north_wall\n"
         )
         self.assertTrue(
-            any("invalid ISO 8601 timestamp" in error for error in errors),
+            any("invalid ISO 8601 timestamp" in e for e in errors),
             errors,
         )
 
@@ -47,7 +46,7 @@ class ValidateCsvTests(unittest.TestCase):
             "2026-10-19T12:00:00Z,IN-1,north_wall,hot\n"
         )
         self.assertTrue(
-            any("finite number" in error for error in errors),
+            any("finite number" in e for e in errors),
             errors,
         )
 
